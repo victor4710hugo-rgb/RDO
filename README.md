@@ -8,7 +8,7 @@ Plataforma para planejamento, distribuição, execução, acompanhamento e docum
 
 | Componente | Decisão |
 |---|---|
-| Frontend | Next.js + React + TypeScript |
+| Frontend | Next.js (App Router) + React + TypeScript |
 | Backend | Go |
 | Banco central | SQLite (instância única inicial) |
 | Banco local | IndexedDB + Dexie.js |
@@ -19,9 +19,11 @@ Plataforma para planejamento, distribuição, execução, acompanhamento e docum
 ## Estrutura prevista
 
     RDO/
-    |-- frontend/   (Next.js, React, TypeScript, PWA)
+    |-- frontend/   (Next.js App Router, React, TypeScript, PWA)
     |-- backend/    (API Go e SQLite)
-    |-- docs/       (roteiro de testes da beta)
+    |-- docs/       (roteiro de testes da beta e propostas visuais)
+    |-- Arquitetura.md
+    |-- AGENTS.md
     |-- .gitignore
     |-- README.md
 
@@ -55,4 +57,11 @@ Fica para depois: autenticação real, RBAC completo, cadastros completos, plane
 
 ## Como executar
 
-Será documentado nas etapas em que frontend e backend passarem a existir.
+### Frontend (`frontend/`)
+- `npm run dev`: servidor de desenvolvimento em http://localhost:3000
+- `npm run build`: build de produção
+- `npm run lint`: verificação do ESLint
+- `npx tsc --noEmit`: verificação de tipos
+
+### Backend (`backend/`)
+- Será documentado nas etapas em que o backend passar a ser executado.
