@@ -16,6 +16,16 @@ func NewFieldReportsHandler(service *services.FieldReportService) *FieldReportsH
 	return &FieldReportsHandler{service: service}
 }
 
+func (h *FieldReportsHandler) List(w http.ResponseWriter, r *http.Request) {
+	reports, err := h.service.List()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(reports)
+}
+
 func (h *FieldReportsHandler) Upsert(w http.ResponseWriter, r *http.Request) {
 	var report models.FieldReport
 	if err := json.NewDecoder(r.Body).Decode(&report); err != nil {
