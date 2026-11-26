@@ -1,0 +1,133 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RDO · Proposta visual v1</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--navy:#0B1B3A;--blue:#1E3A8A;--pastel:#A1B2D6;--sand:#E7E2D9;--gold:#B48A5A;--bg:#F8F6F2;--surf:#fff;--tx:#0B1B3A;--mu:#58627f;--bd:#E7E2D9;--act:#1E3A8A;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme="dark"]{--bg:#081428;--surf:#0E2046;--tx:#E7E2D9;--mu:#A1B2D6;--bd:#21345F;--act:#A1B2D6}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{font:13.5px/1.45 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--tx);font-variant-numeric:tabular-nums}
+.app{display:grid;grid-template-columns:208px 1fr;height:100%}
+aside{background:var(--navy);color:var(--sand);display:flex;flex-direction:column;overflow:auto}
+.brand{padding:16px 16px 14px;border-bottom:1px solid #1c2d54;font-weight:600;letter-spacing:.04em;color:#fff}
+.brand small{display:block;font-weight:400;color:var(--pastel);letter-spacing:0;font-size:11px}
+nav{padding:8px 0}nav a{display:block;padding:7px 16px;color:var(--pastel);text-decoration:none;border-left:2px solid transparent}
+nav a:hover{color:#fff}nav a.on{color:#fff;background:#12254d;border-left-color:var(--gold)}
+.foot{margin-top:auto;padding:12px 16px;font-size:11px;color:var(--pastel);border-top:1px solid #1c2d54}
+.col{display:flex;flex-direction:column;min-width:0;height:100%}
+header{display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--surf);border-bottom:1px solid var(--bd)}
+header .crumb{color:var(--mu)}header .crumb b{color:var(--tx);font-weight:600}
+header .sp{flex:1}
+input,select{font:inherit;color:var(--tx);background:var(--surf);border:1px solid var(--bd);border-radius:3px;padding:5px 8px}
+input{width:200px}.av{width:28px;height:28px;border-radius:50%;background:var(--navy);color:var(--sand);display:grid;place-items:center;font-size:11px;font-weight:600}
+.mb{display:none;background:none;border:1px solid var(--bd);color:var(--tx);border-radius:3px;padding:4px 8px}
+main{flex:1;overflow:auto;padding:18px 20px 28px}
+.ph{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+h1{font-size:19px;font-weight:600;margin:0}.ph p{margin:2px 0 0;color:var(--mu)}
+.btn{background:var(--blue);color:#fff;border:1px solid var(--blue);border-radius:3px;padding:6px 12px;font:inherit;cursor:pointer}
+:root[data-theme="dark"] .btn{background:var(--pastel);color:var(--navy);border-color:var(--pastel)}
+.fl{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;padding:10px 12px;background:var(--surf);border:1px solid var(--bd);border-radius:4px;margin-bottom:14px}
+.fl label{display:flex;flex-direction:column;font-size:11px;color:var(--mu);gap:3px;text-transform:uppercase;letter-spacing:.04em}
+.g{display:grid;gap:14px;margin-bottom:14px}.k5{grid-template-columns:repeat(5,1fr)}.k4{grid-template-columns:repeat(4,1fr)}.c21{grid-template-columns:2fr 1fr}.c12{grid-template-columns:1.5fr 1fr}
+.card{background:var(--surf);border:1px solid var(--bd);border-radius:4px;min-width:0}
+.card>h3{margin:0;padding:10px 14px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center}
+.card>h3 span{font-weight:400;text-transform:none;letter-spacing:0;color:var(--mu)}.pad{padding:12px 14px}
+.kpi{padding:12px 14px;border-top:2px solid var(--navy)}.kpi.go{border-top-color:var(--gold)}
+.kpi small{color:var(--mu);font-size:11px;text-transform:uppercase;letter-spacing:.04em}.kpi b{display:block;font-size:24px;font-weight:600;margin:2px 0}.kpi i{font-style:normal;color:var(--mu);font-size:12px}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}
+th{text-align:left;font-size:11px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.04em;padding:7px 12px;background:color-mix(in srgb,var(--sand) 35%,transparent);border-bottom:1px solid var(--bd)}
+td{padding:7px 12px;border-bottom:1px solid var(--bd)}tr:last-child td{border-bottom:0}tbody tr:hover{background:color-mix(in srgb,var(--sand) 30%,transparent)}tr.sel{background:color-mix(in srgb,var(--pastel) 22%,transparent)}
+td.id{font-weight:600;color:var(--act)}.r{text-align:right}
+.bd{display:inline-block;padding:1px 8px;border-radius:2px;font-size:11.5px;font-weight:500;border:1px solid}
+.s-and{color:var(--act);border-color:var(--pastel);background:color-mix(in srgb,var(--pastel) 25%,transparent)}
+.s-atr{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 16%,transparent)}
+.s-pla{color:var(--mu);border-color:var(--bd);background:color-mix(in srgb,var(--sand) 45%,transparent)}
+.s-con{color:#fff;background:var(--navy);border-color:var(--navy)}
+:root[data-theme="dark"] .s-con{background:var(--blue);border-color:var(--blue)}
+.pb{display:flex;align-items:center;gap:8px;min-width:120px}.pb div{flex:1;height:6px;background:var(--sand);position:relative;border-radius:1px}
+:root[data-theme="dark"] .pb div{background:#21345F}
+.pb u{position:absolute;left:0;top:0;bottom:0;background:var(--blue);display:block}.pb em{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--gold)}.pb span{width:34px;text-align:right}
+.al{list-style:none;margin:0;padding:0}.al li{display:flex;gap:10px;padding:9px 14px;border-bottom:1px solid var(--bd)}.al li:last-child{border:0}
+.al i{flex:none;width:6px;margin-top:3px;height:14px;background:var(--pastel)}.al i.h{background:var(--gold)}.al small{display:block;color:var(--mu)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.chip{border:1px solid var(--bd);background:var(--surf);color:var(--tx);border-radius:3px;padding:5px 11px;cursor:pointer;font:inherit}
+.chip.on{border-color:var(--act);color:var(--act);font-weight:600}
+.dl{display:grid;grid-template-columns:130px 1fr;gap:6px 12px;margin:0}.dl dt{color:var(--mu)}.dl dd{margin:0}
+.leg{display:flex;gap:14px;color:var(--mu);font-size:11.5px;margin-top:4px}.leg b{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:5px;background:var(--blue)}
+.empty{padding:40px;text-align:center;color:var(--mu)}
+@media(max-width:1100px){.k5{grid-template-columns:repeat(3,1fr)}.c21,.c12{grid-template-columns:1fr}}
+@media(max-width:900px){.app{grid-template-columns:1fr}aside{position:fixed;z-index:20;inset:0 30% 0 0;transform:translateX(-100%);transition:transform .15s}aside.open{transform:none}.mb{display:block}input{width:120px}}
+@media(max-width:560px){.k5,.k4{grid-template-columns:1fr 1fr}main{padding:14px 12px}header{padding:8px 12px}header .crumb{display:none}}
+</style></head><body>
+<div class="app"><aside id="sb"><div class="brand">RDO<small>Operações de campo</small></div><nav id="nav"></nav><div class="foot">Proposta visual v1 · dados fictícios</div></aside>
+<div class="col"><header><button class="mb" onclick="sb.classList.toggle('open')">Menu</button><span class="crumb">Siderúrgica Vale Aço › <b id="cr"></b></span><span class="sp"></span><input placeholder="Buscar OS, atividade, RDO"><button class="chip" onclick="var r=document.documentElement;r.dataset.theme=r.dataset.theme=='dark'?'light':'dark'">Tema</button><span class="av">LM</span></header>
+<main id="m"></main></div></div>
+<script>
+const CLI=['Siderúrgica Vale Aço','Química Nordeste','Mineradora Serra Azul'],ST={and:'Em andamento',atr:'Atrasada',pla:'Planejada',con:'Concluída'};
+const PRJ=[
+{id:'P-101',n:'Parada programada · Caldeira 3',c:0,u:'Usina Ipatinga',av:72,pl:78,r:'M. Andrade',f:'18/12/2026',st:'atr',o:'R$ 4,8 mi'},
+{id:'P-102',n:'Montagem · Linha de dutos L-7',c:1,u:'Planta Camaçari',av:58,pl:57,r:'R. Tavares',f:'27/01/2027',st:'and',o:'R$ 6,2 mi'},
+{id:'P-103',n:'Manutenção · Britagem primária',c:2,u:'Mina Serra Azul',av:81,pl:80,r:'C. Pimenta',f:'05/12/2026',st:'and',o:'R$ 2,1 mi'},
+{id:'P-104',n:'Retrofit · Subestação 138 kV',c:0,u:'Usina Ipatinga',av:34,pl:36,r:'J. Figueiredo',f:'30/03/2027',st:'and',o:'R$ 9,4 mi'},
+{id:'P-105',n:'Inspeção · Vasos de pressão',c:1,u:'Planta Camaçari',av:0,pl:0,r:'R. Tavares',f:'15/02/2027',st:'pla',o:'R$ 0,9 mi'}];
+const OS=[
+{id:'OS-4812',d:'Substituição de tubos do superaquecedor',p:0,u:'Caldeira 3',e:'Mecânica A',pz:'02/12',st:'atr',pr:'Alta'},
+{id:'OS-4815',d:'Inspeção por ultrassom em soldas',p:0,u:'Caldeira 3',e:'Ensaios END',pz:'30/11',st:'and',pr:'Alta'},
+{id:'OS-4821',d:'Soldagem de spools · trecho 4',p:1,u:'Linha L-7',e:'Soldagem B',pz:'04/12',st:'and',pr:'Média'},
+{id:'OS-4826',d:'Teste hidrostático · trecho 2',p:1,u:'Linha L-7',e:'Comissionamento',pz:'09/12',st:'pla',pr:'Média'},
+{id:'OS-4830',d:'Troca de revestimento do britador',p:2,u:'Britador BP-01',e:'Mecânica C',pz:'28/11',st:'and',pr:'Alta'},
+{id:'OS-4834',d:'Lançamento de cabos de média tensão',p:3,u:'Subestação SE-2',e:'Elétrica',pz:'11/12',st:'and',pr:'Média'},
+{id:'OS-4809',d:'Andaime multidirecional · plataforma 3',p:0,u:'Caldeira 3',e:'Andaimes',pz:'20/11',st:'con',pr:'Baixa'},
+{id:'OS-4837',d:'Montagem de transformador auxiliar',p:3,u:'Subestação SE-2',e:'Elétrica',pz:'18/12',st:'atr',pr:'Alta'}];
+const ACT=[
+{id:'A-2231',d:'Corte e remoção de tubos danificados',o:'OS-4812',p:0,e:'Mecânica A',pg:68,pl:75,st:'atr'},
+{id:'A-2240',d:'Varredura ultrassônica · lote 3',o:'OS-4815',p:0,e:'Ensaios END',pg:45,pl:45,st:'and'},
+{id:'A-2252',d:'Soldagem circunferencial · juntas 31 a 44',o:'OS-4821',p:1,e:'Soldagem B',pg:52,pl:50,st:'and'},
+{id:'A-2258',d:'Içamento de revestimento · carcaça',o:'OS-4830',p:2,e:'Mecânica C',pg:80,pl:80,st:'and'},
+{id:'A-2263',d:'Passagem de eletrodutos · bancada 2',o:'OS-4834',p:3,e:'Elétrica',pg:30,pl:34,st:'and'},
+{id:'A-2269',d:'Preparação de superfície e pintura',o:'OS-4821',p:1,e:'Pintura',pg:12,pl:20,st:'atr'}];
+const RDO=[
+{id:'RDO-0318',dt:'24/11/2026',p:0,cl:'Ensolarado',ef:46,h:'07:00 – 17:00',ap:'Mecânica A, Ensaios END',oc:'Chuva forte às 15h; frente de trabalho 2 paralisada por 40 min.',st:'and'},
+{id:'RDO-0317',dt:'23/11/2026',p:1,cl:'Nublado',ef:38,h:'07:00 – 16:30',ap:'Soldagem B',oc:'Sem ocorrências.',st:'con'},
+{id:'RDO-0316',dt:'23/11/2026',p:2,cl:'Ensolarado',ef:22,h:'06:30 – 16:00',ap:'Mecânica C',oc:'Atraso na entrega de revestimento (fornecedor).',st:'atr'},
+{id:'RDO-0315',dt:'22/11/2026',p:3,cl:'Nublado',ef:29,h:'07:00 – 17:00',ap:'Elétrica',oc:'Sem ocorrências.',st:'con'},
+{id:'RDO-0314',dt:'21/11/2026',p:0,cl:'Chuvoso',ef:41,h:'07:00 – 15:00',ap:'Mecânica A',oc:'Jornada reduzida por condição climática.',st:'con'}];
+const NAV=[['dashboard','Dashboard'],['clientes','Clientes'],['projetos','Projetos'],['unidades','Unidades'],['os','Ordens de Serviço'],['planejamento','Planejamento'],['calendario','Calendário'],['atividades','Atividades'],['rdo','Relatórios Diários (RDO)'],['equipes','Equipes'],['indicadores','Indicadores'],['configuracoes','Configurações']];
+const F={p:'',c:'',s:'',r:0},$=s=>document.querySelector(s);
+const bd=s=>`<span class="bd s-${s}">${ST[s]}</span>`;
+const pb=(v,pl)=>`<div class="pb"><div><u style="width:${v}%"></u>${pl?`<em style="left:${pl}%"></em>`:''}</div><span>${v}%</span></div>`;
+const ok=x=>(F.p===''||x.p==F.p)&&(F.c===''||PRJ[x.p].c==F.c);
+const tbl=(h,rows)=>`<div class="tw"><table><thead><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`;
+const card=(t,b,a='')=>`<section class="card"><h3>${t}<span>${a}</span></h3>${b}</section>`;
+const kpi=(l,v,s,g)=>`<div class="card kpi ${g?'go':''}"><small>${l}</small><b>${v}</b><i>${s}</i></div>`;
+const sel=(k,l,o)=>`<label>${l}<select onchange="F.${k}=this.value;go()"><option value="">Todos</option>${o.map((x,i)=>`<option value="${i}" ${F[k]!==''&&F[k]==i?'selected':''}>${x}</option>`).join('')}</select></label>`;
+const flt=()=>`<div class="fl"><label>Período<select><option>Nov/2026</option><option>Últimos 30 dias</option><option>Trimestre atual</option></select></label>${sel('c','Cliente',CLI)}${sel('p','Projeto',PRJ.map(p=>p.id+' · '+p.n))}</div>`;
+const ph=(t,s,b)=>`<div class="ph"><div><h1>${t}</h1><p>${s}</p></div>${b?`<button class="btn">${b}</button>`:''}</div>`;
+const osRows=l=>l.map(o=>`<tr><td class="id">${o.id}</td><td>${o.d}</td><td>${PRJ[o.p].id}</td><td>${o.u}</td><td>${o.e}</td><td>${o.pz}</td><td>${o.pr}</td><td>${bd(o.st)}</td></tr>`).join('');
+const OSH=['OS','Descrição','Projeto','Unidade','Equipe','Prazo','Prior.','Status'];
+const actRows=l=>l.map(a=>`<tr><td class="id">${a.id}</td><td>${a.d}</td><td>${a.o}</td><td>${a.e}</td><td>${pb(a.pg,a.pl)}</td><td>${bd(a.st)}</td></tr>`).join('');
+const ACTH=['ID','Atividade','OS','Equipe','Avanço (marca = previsto)','Status'];
+function line(){const pl=[4,9,15,22,30,39,47,55,63,70,78,85],re=[3,8,13,19,27,35,43,52,60,67],x=i=>36+i*(552/11),y=v=>170-v*1.5,P=a=>a.map((v,i)=>(i?'L':'M')+x(i).toFixed(0)+' '+y(v).toFixed(0)).join('');
+let g='';[0,25,50,75,100].forEach(v=>g+=`<line x1="36" x2="588" y1="${y(v)}" y2="${y(v)}" stroke="var(--bd)"/><text x="30" y="${y(v)+4}" text-anchor="end" font-size="10" fill="var(--mu)">${v}</text>`);
+let t='';for(let i=0;i<12;i+=1)t+=`<text x="${x(i)}" y="188" text-anchor="middle" font-size="10" fill="var(--mu)">S${i+1}</text>`;
+return `<div class="pad"><svg viewBox="0 0 600 194" width="100%" role="img" aria-label="Avanço físico previsto e realizado">${g}${t}<path d="${P(pl)}" fill="none" stroke="var(--gold)" stroke-width="1.8" stroke-dasharray="4 3"/><path d="${P(re)}" fill="none" stroke="var(--blue)" stroke-width="2.2"/><circle cx="${x(9)}" cy="${y(67)}" r="3.5" fill="var(--blue)"/></svg><div class="leg"><span><b></b>Realizado</span><span><b style="background:var(--gold)"></b>Previsto</span></div></div>`}
+function dash(){const a=OS.filter(ok),ac=ACT.filter(ok);
+return ph('Dashboard','Visão consolidada da execução · atualizado em 25/11/2026 08:40','Nova OS')+flt()+
+`<div class="g k5">${kpi('OS abertas',a.filter(o=>o.st!='con').length+' de '+a.length,'filtro atual')}${kpi('Avanço físico','67,4%','previsto 70,0%',1)}${kpi('Efetivo em campo','214','6 equipes · hoje')}${kpi('Prazo cumprido','91,2%','últimas 4 semanas')}${kpi('Pendências','12','3 críticas',1)}</div>
+<div class="g c21">${card('Avanço físico acumulado','<!--L-->','semanas · 12 sem.')}${card('Execução por projeto',`<div class="pad">${PRJ.slice(0,4).map(p=>`<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between"><span>${p.id} · ${p.n.split('· ')[1]}</span></div>${pb(p.av,p.pl)}</div>`).join('')}</div>`,'real × previsto')}</div>
+<div class="g c12">${card('Atividades em andamento',tbl(ACTH,actRows(ac)),ac.length+' itens')}${card('Pendências e alertas',`<ul class="al"><li><i class="h"></i><div>Caldeira 3 · avanço 6 pp abaixo do previsto<small>P-101 · responsável M. Andrade</small></div></li><li><i class="h"></i><div>Entrega de revestimento atrasada<small>OS-4830 · fornecedor · RDO-0316</small></div></li><li><i class="h"></i><div>Transformador auxiliar sem liberação de PT<small>OS-4837 · vence 27/11</small></div></li><li><i></i><div>4 RDO aguardando assinatura do cliente<small>Prazo de assinatura: 48 h</small></div></li><li><i></i><div>Certificado de soldador vence em 12 dias<small>Equipe Soldagem B</small></div></li></ul>`,'12 abertas')}</div>`+
+card('Ordens de serviço recentes',tbl(OSH,osRows(a)),'<a href="#os" style="color:var(--act)">ver todas</a>')}
+function proj(){const l=PRJ.filter(p=>(F.c===''||p.c==F.c));return ph('Projetos','Carteira de projetos ativos por cliente','Novo projeto')+flt().replace(/<label>Projeto[\s\S]*?<\/label><\/div>$/,'</div>')+
+`<div class="g k4">${kpi('Projetos ativos',l.length,'carteira filtrada')}${kpi('Valor contratado','R$ 23,4 mi','soma dos contratos')}${kpi('Em atraso',l.filter(p=>p.st=='atr').length,'requer plano de ação',1)}${kpi('Próximo marco','05/12','Britagem primária')}</div>`+
+card('Carteira',tbl(['ID','Projeto','Cliente','Unidade','Responsável','Avanço (marca = previsto)','Término','Valor','Status'],l.map(p=>`<tr><td class="id">${p.id}</td><td>${p.n}</td><td>${CLI[p.c]}</td><td>${p.u}</td><td>${p.r}</td><td>${pb(p.av,p.pl||null)}</td><td>${p.f}</td><td class="r">${p.o}</td><td>${bd(p.st)}</td></tr>`).join('')),l.length+' projetos')}
+function os(){const a=OS.filter(ok),n=s=>a.filter(o=>s===''||o.st==s).length,l=a.filter(o=>F.s===''||o.st==F.s);
+return ph('Ordens de Serviço','Acompanhamento, prioridade e prazo','Nova OS')+flt()+`<div class="chips">${[['','Todas'],...Object.entries(ST)].map(([k,v])=>`<button class="chip ${F.s===k?'on':''}" onclick="F.s='${k}';go()">${v} · ${n(k)}</button>`).join('')}</div>`+card('Lista de OS',tbl(OSH,osRows(l)),l.length+' registros')}
+function atv(){const l=ACT.filter(ok),eq=[...new Set(ACT.map(a=>a.e))];
+return ph('Atividades','Execução diária por equipe e frente de trabalho','Nova atividade')+flt()+`<div class="g c21">${card('Atividades',tbl(ACTH,actRows(l)),l.length+' itens')}${card('Carga por equipe',`<div class="pad">${eq.map(e=>{const v=ACT.filter(a=>a.e==e);return `<div style="margin-bottom:10px">${e} <small style="color:var(--mu)">· ${v.length} ativ.</small>${pb(Math.round(v.reduce((s,a)=>s+a.pg,0)/v.length))}</div>`}).join('')}</div>`,'avanço médio')}</div>`}
+function rdo(){const l=RDO.filter(ok),r=l[F.r]||l[0];
+return ph('Relatórios Diários de Obra','Registro diário de efetivo, clima, atividades e ocorrências','Novo RDO')+flt()+`<div class="g c12">${card('RDO emitidos',tbl(['Nº','Data','Projeto','Efetivo','Status'],l.map((x,i)=>`<tr class="${x===r?'sel':''}" style="cursor:pointer" onclick="F.r=${i};go()"><td class="id">${x.id}</td><td>${x.dt}</td><td>${PRJ[x.p].id}</td><td class="r">${x.ef}</td><td>${bd(x.st)}</td></tr>`).join('')),l.length+' registros')}${r?card(r.id,`<div class="pad"><dl class="dl"><dt>Projeto</dt><dd>${PRJ[r.p].n}</dd><dt>Cliente</dt><dd>${CLI[PRJ[r.p].c]}</dd><dt>Data</dt><dd>${r.dt}</dd><dt>Clima</dt><dd>${r.cl}</dd><dt>Jornada</dt><dd>${r.h}</dd><dt>Efetivo</dt><dd>${r.ef} colaboradores</dd><dt>Equipes</dt><dd>${r.ap}</dd><dt>Ocorrências</dt><dd>${r.oc}</dd><dt>Assinaturas</dt><dd>${r.st=='con'?'Fiscal e cliente':'Pendente do cliente'}</dd></dl></div>`,bd(r.st)):''}</div>`}
+const V={dashboard:dash,projetos:proj,os:os,atividades:atv,rdo:rdo};
+function go(){const k=(location.hash||'#dashboard').slice(1),n=NAV.find(x=>x[0]==k)||NAV[0];
+$('#nav').innerHTML=NAV.map(x=>`<a href="#${x[0]}" class="${x[0]==n[0]?'on':''}">${x[1]}</a>`).join('');$('#cr').textContent=n[1];
+$('#m').innerHTML=(V[n[0]]||(()=>ph(n[1],'Tela prevista para a próxima etapa')+card('',`<div class="empty">Esta tela será desenhada após a aprovação do padrão visual.</div>`)))().replace('<!--L-->',line());sb.classList.remove('open')}
+addEventListener('hashchange',()=>{F.r=0;go()});go();
+</script></body></html>
