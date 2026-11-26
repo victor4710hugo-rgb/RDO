@@ -8,20 +8,55 @@ import (
 	"github.com/victor4710hugo-rgb/RDO/backend/internal/services"
 )
 
-func New(repo *repositories.Repository) *http.ServeMux {
+// New monta o roteador da API.
+// Rotas públicas: GET /api/v1/health e POST /api/v1/auth/login.
+// Todas as demais exigem JWT válido (auth.RequireAuth).
+func New(repo *repositories.Repository) (*http.ServeMux, error) {
 	mux := http.NewServeMux()
 
+	authSvc, err := services.NewAuthService(repo)
+	if err != nil {
+		return nil, err
+	}
+
+	auth := handlers.NewAuthHandler(authSvc)
 	operations := handlers.NewOperationsHandler(repo)
 	fieldReports := handlers.NewFieldReportsHandler(services.NewFieldReportService(repo))
-	sync := handlers.NewSyncHandler()
+	users := handlers.NewUsersHandler(services.NewUserService(repo))
+	syncH := handlers.NewSyncHandler() // evita sombrear o pacote "sync" da stdlib
 
+	// ---------------------------------------------------------------
+	// Rotas públicas
+	// ---------------------------------------------------------------
 	mux.HandleFunc("GET /api/v1/health", handlers.Health)
-	mux.HandleFunc("GET /api/v1/projects", operations.Projects)
-	mux.HandleFunc("GET /api/v1/work-orders", operations.WorkOrders)
-	mux.HandleFunc("GET /api/v1/activities", operations.Activities)
-	mux.HandleFunc("POST /api/v1/field-reports", fieldReports.Upsert)
-	mux.HandleFunc("GET /api/v1/sync/pull", sync.Pull)
-	mux.HandleFunc("POST /api/v1/sync/push", sync.Push)
+	mux.HandleFunc("POST /api/v1/auth/login", auth.Login)
 
-	return mux
+	// ---------------------------------------------------------------
+	// Rotas protegidas por JWT
+	// ---------------------------------------------------------------
+
+	// Autenticação
+	mux.HandleFunc("GET /api/v1/auth/me", auth.RequireAuth(auth.Me))
+
+	// Operações (já existiam, agora protegidas)
+	mux.HandleFunc("GET /api/v1/projects", auth.RequireAuth(operations.Projects))
+	mux.HandleFunc("GET /api/v1/work-orders", auth.RequireAuth(operations.WorkOrders))
+	mux.HandleFunc("GET /api/v1/activities", auth.RequireAuth(operations.Activities))
+
+	// Relatórios de campo (POST já existia; GET é novo)
+	mux.HandleFunc("GET /api/v1/field-reports", auth.RequireAuth(fieldReports.List))
+	mux.HandleFunc("POST /api/v1/field-reports", auth.RequireAuth(fieldReports.Upsert))
+
+	// Usuários (novo)
+	mux.HandleFunc("GET /api/v1/users", auth.RequireAuth(users.List))
+	mux.HandleFunc("GET /api/v1/users/{id}", auth.RequireAuth(users.GetByID))
+	mux.HandleFunc("POST /api/v1/users", auth.RequireAuth(users.Create))
+	mux.HandleFunc("PUT /api/v1/users/{id}", auth.RequireAuth(users.Update))
+	mux.HandleFunc("DELETE /api/v1/users/{id}", auth.RequireAuth(users.Delete))
+
+	// Sincronização (já existia, agora protegida)
+	mux.HandleFunc("GET /api/v1/sync/pull", auth.RequireAuth(syncH.Pull))
+	mux.HandleFunc("POST /api/v1/sync/push", auth.RequireAuth(syncH.Push))
+
+	return mux, nil
 }

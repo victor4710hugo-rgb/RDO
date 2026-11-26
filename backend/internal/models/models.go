@@ -13,7 +13,7 @@ type Client struct {
 type Project struct {
 	ID                   string    `json:"id"`
 	ClientID             string    `json:"client_id"`
-	ClientName           string    `json:"client_name,omitempty"` // Preenchido via JOIN com clients
+	ClientName           string    `json:"client_name,omitempty"`
 	Name                 string    `json:"name"`
 	WorkforceControlMode string    `json:"workforce_control_mode"`
 	Status               string    `json:"status"`
@@ -70,4 +70,30 @@ type SyncRecord struct {
 	SyncedAt      *time.Time `json:"synced_at,omitempty"`
 	CreatedAt     time.Time  `json:"created_at"`
 	UpdatedAt     time.Time  `json:"updated_at"`
+}
+
+type User struct {
+	ID           string    `json:"id"`
+	Name         string    `json:"name"`
+	Email        string    `json:"email"`
+	Role         string    `json:"role"`
+	Status       string    `json:"status"`
+	PasswordHash string    `json:"-"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
+}
+
+type CreateUserInput struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Role     string `json:"role"`
+}
+
+type UpdateUserInput struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password,omitempty"`
+	Role     string `json:"role"`
+	Status   string `json:"status,omitempty"`
 }
