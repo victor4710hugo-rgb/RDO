@@ -235,3 +235,35 @@ func (r *Repository) UpsertFieldReport(report models.FieldReport) (models.FieldR
 
 	return report, nil
 }
+func (r *Repository) ListFieldReports() ([]models.FieldReport, error) {
+	const query = `
+		SELECT id, project_id, report_number, report_date, status, version, payload, created_at, updated_at
+		FROM field_reports
+		ORDER BY report_date DESC, created_at DESC
+	`
+	rows, err := r.db.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("listar RDOs: %w", err)
+	}
+	defer rows.Close()
+
+	reports := make([]models.FieldReport, 0)
+	for rows.Next() {
+		var fr models.FieldReport
+		var createdAt, updatedAt string
+		if err := rows.Scan(
+			&fr.ID, &fr.ProjectID, &fr.ReportNumber, &fr.ReportDate,
+			&fr.Status, &fr.Version, &fr.Payload, &createdAt, &updatedAt,
+		); err != nil {
+			return nil, fmt.Errorf("ler RDO: %w", err)
+		}
+		if fr.CreatedAt, err = parseTime(createdAt); err != nil {
+			return nil, err
+		}
+		if fr.UpdatedAt, err = parseTime(updatedAt); err != nil {
+			return nil, err
+		}
+		reports = append(reports, fr)
+	}
+	return reports, rows.Err()
+}

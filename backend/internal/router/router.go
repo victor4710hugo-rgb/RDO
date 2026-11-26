@@ -13,13 +13,20 @@ func New(repo *repositories.Repository) *http.ServeMux {
 
 	operations := handlers.NewOperationsHandler(repo)
 	fieldReports := handlers.NewFieldReportsHandler(services.NewFieldReportService(repo))
+	users := handlers.NewUsersHandler(services.NewUserService(repo))
 	sync := handlers.NewSyncHandler()
 
 	mux.HandleFunc("GET /api/v1/health", handlers.Health)
 	mux.HandleFunc("GET /api/v1/projects", operations.Projects)
 	mux.HandleFunc("GET /api/v1/work-orders", operations.WorkOrders)
 	mux.HandleFunc("GET /api/v1/activities", operations.Activities)
+	mux.HandleFunc("GET /api/v1/field-reports", fieldReports.List)
 	mux.HandleFunc("POST /api/v1/field-reports", fieldReports.Upsert)
+	mux.HandleFunc("GET /api/v1/users", users.List)
+	mux.HandleFunc("GET /api/v1/users/{id}", users.GetByID)
+	mux.HandleFunc("POST /api/v1/users", users.Create)
+	mux.HandleFunc("PUT /api/v1/users/{id}", users.Update)
+	mux.HandleFunc("DELETE /api/v1/users/{id}", users.Delete)
 	mux.HandleFunc("GET /api/v1/sync/pull", sync.Pull)
 	mux.HandleFunc("POST /api/v1/sync/push", sync.Push)
 
