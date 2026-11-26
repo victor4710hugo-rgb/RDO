@@ -4,14 +4,12 @@ import (
 	"database/sql"
 	"fmt"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 func Seed(db *sql.DB) error {
 	var count int
 	if err := db.QueryRow("SELECT COUNT(*) FROM projects").Scan(&count); err != nil {
-		return fmt.Errorf("contar projetos: %w", err)
+		return fmt.Errorf("consultar seed de projetos: %w", err)
 	}
 	if count > 0 {
 		return nil
@@ -19,31 +17,42 @@ func Seed(db *sql.DB) error {
 
 	now := time.Now().UTC().Format(time.RFC3339)
 
-	projectID := uuid.NewString()
-	if _, err := db.Exec(
-		"INSERT INTO projects (id, name, client_name, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
-		projectID, "Projeto Demonstracao", "Cliente Demonstracao", now, now,
+	tx, err := db.Begin()
+	if err != nil {
+		return fmt.Errorf("iniciar seed: %w", err)
+	}
+	defer tx.Rollback()
+
+	if _, err := tx.Exec(
+		`INSERT INTO clients (id, name, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?)`,
+		"cli-001", "Cliente Demonstração S.A.", "active", now, now,
+	); err != nil {
+		return fmt.Errorf("inserir cliente: %w", err)
+	}
+
+	if _, err := tx.Exec(
+		`INSERT INTO projects (id, client_id, name, workforce_control_mode, status, created_at, updated_at)
+		 VALUES (?, ?, ?, ?, ?, ?, ?)`,
+		"proj-001", "cli-001", "Obra Industrial — Unidade Norte", "both", "in_progress", now, now,
 	); err != nil {
 		return fmt.Errorf("inserir projeto: %w", err)
 	}
 
-	workOrderID := uuid.NewString()
-	if _, err := db.Exec(
-		"INSERT INTO work_orders (id, project_id, number, title, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
-		workOrderID, projectID, "OS-001", "Manutencao preventiva", now, now,
+	if _, err := tx.Exec(
+		`INSERT INTO work_orders (id, project_id, number, title, priority, status, created_at, updated_at)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+		"os-001", "proj-001", "OS-2026-001", "Montagem Eletromecânica Linha A", "high", "in_progress", now, now,
 	); err != nil {
 		return fmt.Errorf("inserir OS: %w", err)
 	}
 
-	activities := []string{"Inspecao inicial", "Substituicao de componente", "Teste final"}
-	for _, title := range activities {
-		if _, err := db.Exec(
-			"INSERT INTO activities (id, work_order_id, title, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
-			uuid.NewString(), workOrderID, title, "pending", now, now,
-		); err != nil {
-			return fmt.Errorf("inserir atividade: %w", err)
-		}
+	if _, err := tx.Exec(
+		`INSERT INTO activities (id, work_order_id, title, priority, status, planned_progress, actual_progress, created_at, updated_at)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		"act-001", "os-001", "Instalação de eletrocalhas e painéis", "high", "in_progress", 60.0, 45.0, now, now,
+	); err != nil {
+		return fmt.Errorf("inserir atividade: %w", err)
 	}
 
-	return nil
+	return tx.Commit()
 }
