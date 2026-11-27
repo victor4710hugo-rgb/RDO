@@ -2,12 +2,17 @@ package repositories
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/victor4710hugo-rgb/RDO/backend/internal/models"
 )
 
+// ErrVersionConflict indica que a versão enviada pelo cliente está desatualizada (handler responde 409).
+var ErrVersionConflict = errors.New("conflito de versão")
+
+// ListFieldReports consulta todos os RDOs ordenados da data mais recente para a mais antiga.
 func (r *Repository) ListFieldReports() ([]models.FieldReport, error) {
 	const query = `
 		SELECT
@@ -58,6 +63,7 @@ func (r *Repository) ListFieldReports() ([]models.FieldReport, error) {
 	return reports, rows.Err()
 }
 
+// UpsertFieldReport cria um RDO novo (version = 1) ou atualiza um existente validando controle otimista de versão.
 func (r *Repository) UpsertFieldReport(report models.FieldReport) (models.FieldReport, error) {
 	now := time.Now().UTC()
 	if report.Status == "" {
@@ -68,6 +74,7 @@ func (r *Repository) UpsertFieldReport(report models.FieldReport) (models.FieldR
 	err := r.db.QueryRow("SELECT version FROM field_reports WHERE id = ?", report.ID).Scan(&currentVersion)
 	switch {
 	case err == sql.ErrNoRows:
+		// Novo registro: inicia na versão 1.
 		report.Version = 1
 		report.CreatedAt = now
 		report.UpdatedAt = now
@@ -91,8 +98,9 @@ func (r *Repository) UpsertFieldReport(report models.FieldReport) (models.FieldR
 	case err != nil:
 		return report, fmt.Errorf("consultar RDO: %w", err)
 	default:
+		// Registro existente: bloqueia sobrescrita silenciosa se a versão divergir.
 		if report.Version != currentVersion {
-			return report, fmt.Errorf("conflito de versão: esperado %d, recebido %d", currentVersion, report.Version)
+			return report, fmt.Errorf("%w: esperado %d, recebido %d", ErrVersionConflict, currentVersion, report.Version)
 		}
 		report.Version = currentVersion + 1
 		report.UpdatedAt = now
