@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
-import type { Activity, FieldReportInput, Project, WorkOrder } from "../types";
-  
-const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080/api/v1";
+import type {
+  Activity,
+  FieldReport,
+  FieldReportInput,
+  Project,
+  WorkOrder,
+} from "../types";
+
+const BASE = process.env.NEXT_PUBLIC_API_URL ?? "/api/v1";
 
 async function get<T>(path: string): Promise<T> {
   const response = await fetch(`${BASE}${path}`, {
@@ -36,8 +42,9 @@ export const api = {
   projects: () => get<Project[]>("/projects"),
   workOrders: () => get<WorkOrder[]>("/work-orders"),
   activities: () => get<Activity[]>("/activities"),
+  fieldReports: () => get<FieldReport[]>("/field-reports"),
   saveFieldReport: (report: FieldReportInput) =>
-    post<{ status: string }>("/field-reports", report),
+    post<FieldReport>("/field-reports", report),
 };
 
 export function useApi<T>(loader: () => Promise<T>) {
@@ -65,4 +72,4 @@ export function useApi<T>(loader: () => Promise<T>) {
   }, []);
 
   return { data, error, loading };
-} 
+}

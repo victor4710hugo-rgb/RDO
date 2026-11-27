@@ -2,10 +2,7 @@ package repositories
 
 import (
 	"database/sql"
-	"fmt"
 	"time"
-
-	"github.com/victor4710hugo-rgb/RDO/backend/internal/models"
 )
 
 type Repository struct {
