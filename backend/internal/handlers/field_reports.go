@@ -43,3 +43,11 @@ func (h *FieldReportsHandler) Upsert(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(saved)
 }
+func (h *FieldReportsHandler) List(w http.ResponseWriter, r *http.Request) {
+	reports, err := h.service.List()
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	writeJSON(w, http.StatusOK, reports)
+}
