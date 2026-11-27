@@ -11,9 +11,12 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// ErrValidation marca qualquer erro de entrada inválida. O handler pode usar
-// errors.Is(err, ErrValidation) para responder 400.
-var ErrValidation = errors.New("dados inválidos")
+// ErrValidation marca qualquer erro de entrada inválida (handler responde 400).
+// ErrForbiddenAction marca ações bloqueadas por regra de segurança/RBAC (handler responde 403).
+var (
+	ErrValidation      = errors.New("dados inválidos")
+	ErrForbiddenAction = errors.New("ação não permitida")
+)
 
 // minPasswordLen é o tamanho mínimo da senha (criação e troca).
 const minPasswordLen = 8
@@ -31,6 +34,11 @@ func NewUserService(repo *repositories.Repository) *UserService {
 // validationError padroniza erros de validação com errors.Join.
 func validationError(msg string) error {
 	return errors.Join(ErrValidation, errors.New(msg))
+}
+
+// forbiddenError padroniza erros de ação proibida (403) com errors.Join.
+func forbiddenError(msg string) error {
+	return errors.Join(ErrForbiddenAction, errors.New(msg))
 }
 
 // isValidRole aceita apenas os papéis existentes no sistema.
@@ -79,7 +87,7 @@ func hashPassword(password string) (string, error) {
 	return string(hash), nil
 }
 
-// List devolve todos os usuários.
+// List devolve todos os usuários ativos.
 func (s *UserService) List() ([]models.User, error) {
 	return s.repo.ListUsers()
 }
@@ -113,11 +121,12 @@ func (s *UserService) Create(in models.CreateUserInput) (models.User, error) {
 	})
 }
 
-// Update atualiza nome, e-mail e papel. Regras:
+// Update atualiza nome, e-mail, papel e status. Regras:
 //   - papel é OBRIGATÓRIO (vazio é rejeitado, nunca preservado em silêncio);
+//   - o usuário autenticado (actorID) não pode alterar o próprio papel (403);
 //   - status vazio preserva o atual; se enviado, deve ser active|inactive|blocked;
 //   - senha vazia preserva o hash atual; se enviada, é validada e re-hasheada.
-func (s *UserService) Update(id string, in models.UpdateUserInput) (models.User, error) {
+func (s *UserService) Update(actorID, id string, in models.UpdateUserInput) (models.User, error) {
 	existing, err := s.repo.GetUserByID(id)
 	if err != nil {
 		return models.User{}, err
@@ -136,6 +145,10 @@ func (s *UserService) Update(id string, in models.UpdateUserInput) (models.User,
 	}
 	if !isValidStatus(status) {
 		return models.User{}, validationError("status permitido: active, inactive ou blocked")
+	}
+	// Regra de segurança RBAC: impede que o usuário autenticado rebaixe ou troque o próprio papel.
+	if actorID != "" && actorID == id && role != existing.Role {
+		return models.User{}, forbiddenError("não é permitido alterar o próprio papel")
 	}
 
 	passwordHash := existing.PasswordHash
@@ -156,7 +169,10 @@ func (s *UserService) Update(id string, in models.UpdateUserInput) (models.User,
 	})
 }
 
-// Delete remove o usuário pelo identificador.
-func (s *UserService) Delete(id string) error {
+// Delete remove o usuário pelo identificador, impedindo que o usuário autenticado exclua a si mesmo.
+func (s *UserService) Delete(actorID, id string) error {
+	if actorID != "" && actorID == id {
+		return forbiddenError("não é permitido excluir o próprio usuário")
+	}
 	return s.repo.DeleteUser(id)
 }
