@@ -86,6 +86,30 @@ func (h *AuthHandler) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
+func (h *AuthHandler) RequireRole(allowedRoles ...string) func(http.HandlerFunc) http.HandlerFunc {
+	allowed := make(map[string]struct{}, len(allowedRoles))
+	for _, role := range allowedRoles {
+		allowed[strings.ToLower(strings.TrimSpace(role))] = struct{}{}
+	}
+
+	return func(next http.HandlerFunc) http.HandlerFunc {
+		return h.RequireAuth(func(w http.ResponseWriter, r *http.Request) {
+			claims, ok := ClaimsFromContext(r.Context())
+			if !ok {
+				writeError(w, http.StatusUnauthorized, "não autenticado")
+				return
+			}
+
+			if _, permitted := allowed[strings.ToLower(claims.Role)]; !permitted {
+				writeError(w, http.StatusForbidden, "permissão insuficiente para este recurso")
+				return
+			}
+
+			next(w, r)
+		})
+	}
+}
+
 func ClaimsFromContext(ctx context.Context) (*services.AuthClaims, bool) {
 	claims, ok := ctx.Value(authClaimsKey).(*services.AuthClaims)
 	return claims, ok

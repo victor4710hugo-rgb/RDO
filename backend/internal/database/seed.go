@@ -6,12 +6,9 @@ import (
 	"os"
 	"strings"
 	"time"
-<<<<<<< HEAD
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
-=======
->>>>>>> origin/main
 )
 
 // Seed popula o banco com dados de demonstração (cliente, projeto, OS e
