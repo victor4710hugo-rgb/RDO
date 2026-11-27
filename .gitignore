@@ -22,6 +22,7 @@ backend/bin/
 *.sqlite3
 backend/data/
 backend/uploads/
+.env
 
 # Logs e temporarios
 *.log
