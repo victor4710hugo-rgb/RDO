@@ -19,35 +19,24 @@ func NewFieldReportsHandler(service *services.FieldReportService) *FieldReportsH
 func (h *FieldReportsHandler) List(w http.ResponseWriter, r *http.Request) {
 	reports, err := h.service.List()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		writeError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(reports)
+	writeJSON(w, http.StatusOK, reports)
 }
 
 func (h *FieldReportsHandler) Upsert(w http.ResponseWriter, r *http.Request) {
 	var report models.FieldReport
 	if err := json.NewDecoder(r.Body).Decode(&report); err != nil {
-		http.Error(w, "JSON inválido", http.StatusBadRequest)
+		writeError(w, http.StatusBadRequest, "JSON inválido")
 		return
 	}
 
 	saved, err := h.service.Upsert(report)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusConflict)
+		writeError(w, http.StatusConflict, err.Error())
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(saved)
-}
-func (h *FieldReportsHandler) List(w http.ResponseWriter, r *http.Request) {
-	reports, err := h.service.List()
-	if err != nil {
-		writeError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	writeJSON(w, http.StatusOK, reports)
+	writeJSON(w, http.StatusOK, saved)
 }
