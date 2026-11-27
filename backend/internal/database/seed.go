@@ -20,7 +20,7 @@ func Seed(db *sql.DB) error {
 	// Uma única transação: ou todo o seed é gravado, ou nada.
 	tx, err := db.Begin()
 	if err != nil {
-		return fmt.Errorf("iniciar transacao de seed: %w", err)
+		return fmt.Errorf("iniciar seed: %w", err)
 	}
 	defer tx.Rollback() // no-op se o Commit já tiver sido feito
 
@@ -82,6 +82,7 @@ func Seed(db *sql.DB) error {
 		}
 	}
 
+	// Confirma tudo de uma vez.
 	if err := tx.Commit(); err != nil {
 		return fmt.Errorf("confirmar seed: %w", err)
 	}

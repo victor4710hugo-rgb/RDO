@@ -21,23 +21,7 @@ func parseTime(value string) (time.Time, error) {
 }
 
 func (r *Repository) ListProjects() ([]models.Project, error) {
-	const query = `
-		SELECT
-			p.id,
-			p.client_id,
-			c.name,
-			p.name,
-			p.workforce_control_mode,
-			p.status,
-			p.created_at,
-			p.updated_at
-		FROM projects p
-		INNER JOIN clients c ON c.id = p.client_id
-		WHERE p.deleted_at IS NULL
-		ORDER BY p.name
-	`
-
-	rows, err := r.db.Query(query)
+	rows, err := r.db.Query("SELECT id, name, client_name, created_at, updated_at FROM projects ORDER BY name")
 	if err != nil {
 		return nil, fmt.Errorf("listar projetos: %w", err)
 	}
@@ -47,16 +31,7 @@ func (r *Repository) ListProjects() ([]models.Project, error) {
 	for rows.Next() {
 		var p models.Project
 		var createdAt, updatedAt string
-		if err := rows.Scan(
-			&p.ID,
-			&p.ClientID,
-			&p.ClientName,
-			&p.Name,
-			&p.WorkforceControlMode,
-			&p.Status,
-			&createdAt,
-			&updatedAt,
-		); err != nil {
+		if err := rows.Scan(&p.ID, &p.Name, &p.ClientName, &createdAt, &updatedAt); err != nil {
 			return nil, fmt.Errorf("ler projeto: %w", err)
 		}
 		p.CreatedAt, err = parseTime(createdAt)
@@ -73,23 +48,7 @@ func (r *Repository) ListProjects() ([]models.Project, error) {
 }
 
 func (r *Repository) ListWorkOrders() ([]models.WorkOrder, error) {
-	const query = `
-		SELECT
-			id,
-			project_id,
-			unit_id,
-			number,
-			title,
-			priority,
-			status,
-			created_at,
-			updated_at
-		FROM work_orders
-		WHERE deleted_at IS NULL
-		ORDER BY number
-	`
-
-	rows, err := r.db.Query(query)
+	rows, err := r.db.Query("SELECT id, project_id, number, title, created_at, updated_at FROM work_orders ORDER BY number")
 	if err != nil {
 		return nil, fmt.Errorf("listar OS: %w", err)
 	}
@@ -99,17 +58,7 @@ func (r *Repository) ListWorkOrders() ([]models.WorkOrder, error) {
 	for rows.Next() {
 		var o models.WorkOrder
 		var createdAt, updatedAt string
-		if err := rows.Scan(
-			&o.ID,
-			&o.ProjectID,
-			&o.UnitID,
-			&o.Number,
-			&o.Title,
-			&o.Priority,
-			&o.Status,
-			&createdAt,
-			&updatedAt,
-		); err != nil {
+		if err := rows.Scan(&o.ID, &o.ProjectID, &o.Number, &o.Title, &createdAt, &updatedAt); err != nil {
 			return nil, fmt.Errorf("ler OS: %w", err)
 		}
 		o.CreatedAt, err = parseTime(createdAt)
@@ -126,23 +75,7 @@ func (r *Repository) ListWorkOrders() ([]models.WorkOrder, error) {
 }
 
 func (r *Repository) ListActivities() ([]models.Activity, error) {
-	const query = `
-		SELECT
-			id,
-			work_order_id,
-			title,
-			priority,
-			status,
-			planned_progress,
-			actual_progress,
-			created_at,
-			updated_at
-		FROM activities
-		WHERE deleted_at IS NULL
-		ORDER BY title
-	`
-
-	rows, err := r.db.Query(query)
+	rows, err := r.db.Query("SELECT id, work_order_id, title, status, created_at, updated_at FROM activities ORDER BY title")
 	if err != nil {
 		return nil, fmt.Errorf("listar atividades: %w", err)
 	}
@@ -152,17 +85,7 @@ func (r *Repository) ListActivities() ([]models.Activity, error) {
 	for rows.Next() {
 		var a models.Activity
 		var createdAt, updatedAt string
-		if err := rows.Scan(
-			&a.ID,
-			&a.WorkOrderID,
-			&a.Title,
-			&a.Priority,
-			&a.Status,
-			&a.PlannedProgress,
-			&a.ActualProgress,
-			&createdAt,
-			&updatedAt,
-		); err != nil {
+		if err := rows.Scan(&a.ID, &a.WorkOrderID, &a.Title, &a.Status, &createdAt, &updatedAt); err != nil {
 			return nil, fmt.Errorf("ler atividade: %w", err)
 		}
 		a.CreatedAt, err = parseTime(createdAt)
