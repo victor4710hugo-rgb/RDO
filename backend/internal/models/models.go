@@ -2,6 +2,7 @@ package models
 
 import "time"
 
+// Client representa um cliente contratante.
 type Client struct {
 	ID        string    `json:"id"`
 	Name      string    `json:"name"`
@@ -10,10 +11,11 @@ type Client struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+// Project representa um projeto/obra vinculado a um cliente.
 type Project struct {
 	ID                   string    `json:"id"`
 	ClientID             string    `json:"client_id"`
-	ClientName           string    `json:"client_name,omitempty"`
+	ClientName           string    `json:"client_name,omitempty"` // Preenchido via JOIN com clients
 	Name                 string    `json:"name"`
 	WorkforceControlMode string    `json:"workforce_control_mode"`
 	Status               string    `json:"status"`
@@ -21,6 +23,7 @@ type Project struct {
 	UpdatedAt            time.Time `json:"updated_at"`
 }
 
+// WorkOrder representa uma ordem de serviço de um projeto.
 type WorkOrder struct {
 	ID        string    `json:"id"`
 	ProjectID string    `json:"project_id"`
@@ -33,6 +36,7 @@ type WorkOrder struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+// Activity representa uma atividade de uma ordem de serviço.
 type Activity struct {
 	ID              string    `json:"id"`
 	WorkOrderID     string    `json:"work_order_id"`
@@ -45,6 +49,7 @@ type Activity struct {
 	UpdatedAt       time.Time `json:"updated_at"`
 }
 
+// FieldReport representa um relatório diário de obra (RDO).
 type FieldReport struct {
 	ID           string    `json:"id"`
 	ProjectID    string    `json:"project_id"`
@@ -57,6 +62,7 @@ type FieldReport struct {
 	UpdatedAt    time.Time `json:"updated_at"`
 }
 
+// SyncRecord representa um item da fila de sincronização offline.
 type SyncRecord struct {
 	ID            string     `json:"id"`
 	EntityType    string     `json:"entity_type"`
@@ -72,6 +78,7 @@ type SyncRecord struct {
 	UpdatedAt     time.Time  `json:"updated_at"`
 }
 
+// User representa um usuário da API. O hash da senha nunca é serializado.
 type User struct {
 	ID           string    `json:"id"`
 	Name         string    `json:"name"`
@@ -83,6 +90,7 @@ type User struct {
 	UpdatedAt    time.Time `json:"updated_at"`
 }
 
+// CreateUserInput é o corpo esperado em POST /api/v1/users.
 type CreateUserInput struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
@@ -90,6 +98,8 @@ type CreateUserInput struct {
 	Role     string `json:"role"`
 }
 
+// UpdateUserInput é o corpo esperado em PUT /api/v1/users/{id}.
+// Password e Status são opcionais: se vazios, o valor atual é mantido.
 type UpdateUserInput struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`

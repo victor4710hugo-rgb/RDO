@@ -38,23 +38,23 @@ func New(repo *repositories.Repository) (*http.ServeMux, error) {
 	// Autenticação
 	mux.HandleFunc("GET /api/v1/auth/me", auth.RequireAuth(auth.Me))
 
-	// Operações (já existiam, agora protegidas)
+	// Operações
 	mux.HandleFunc("GET /api/v1/projects", auth.RequireAuth(operations.Projects))
 	mux.HandleFunc("GET /api/v1/work-orders", auth.RequireAuth(operations.WorkOrders))
 	mux.HandleFunc("GET /api/v1/activities", auth.RequireAuth(operations.Activities))
 
-	// Relatórios de campo (POST já existia; GET é novo)
+	// Relatórios de campo
 	mux.HandleFunc("GET /api/v1/field-reports", auth.RequireAuth(fieldReports.List))
 	mux.HandleFunc("POST /api/v1/field-reports", auth.RequireAuth(fieldReports.Upsert))
 
-	// Usuários (novo)
+	// Usuários
 	mux.HandleFunc("GET /api/v1/users", auth.RequireAuth(users.List))
 	mux.HandleFunc("GET /api/v1/users/{id}", auth.RequireAuth(users.GetByID))
 	mux.HandleFunc("POST /api/v1/users", auth.RequireAuth(users.Create))
 	mux.HandleFunc("PUT /api/v1/users/{id}", auth.RequireAuth(users.Update))
 	mux.HandleFunc("DELETE /api/v1/users/{id}", auth.RequireAuth(users.Delete))
 
-	// Sincronização (já existia, agora protegida)
+	// Sincronização
 	mux.HandleFunc("GET /api/v1/sync/pull", auth.RequireAuth(syncH.Pull))
 	mux.HandleFunc("POST /api/v1/sync/push", auth.RequireAuth(syncH.Push))
 
