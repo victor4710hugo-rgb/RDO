@@ -59,7 +59,6 @@ func New(repo *repositories.Repository) (*http.ServeMux, error) {
 
 	return mux, nil
 }
-=======
 	syncH := handlers.NewSyncHandler() // evita sombrear o pacote "sync" da stdlib
 
 	// ---------------------------------------------------------------
