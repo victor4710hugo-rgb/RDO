@@ -94,27 +94,57 @@ func (r *Repository) CreateUser(u models.User) (models.User, error) {
 	defer tx.Rollback()
 
 	now := time.Now().UTC()
-	u.CreatedAt, u.UpdatedAt = now, now
+	nowStr := now.Format(time.RFC3339)
 	if u.Status == "" {
 		u.Status = "active"
 	}
 
-	_, err = tx.Exec(
-		`INSERT INTO users (id, name, email, status, password_hash, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-		u.ID, u.Name, u.Email, u.Status, u.PasswordHash, now.Format(time.RFC3339), now.Format(time.RFC3339),
-	)
-	if err != nil {
-		if strings.Contains(strings.ToLower(err.Error()), "unique") {
-			return u, ErrEmailExists
+	var existingID, existingCreatedAt string
+	err = tx.QueryRow(
+		`SELECT id, created_at FROM users WHERE LOWER(email) = LOWER(?) AND deleted_at IS NOT NULL`,
+		u.Email,
+	).Scan(&existingID, &existingCreatedAt)
+
+	switch {
+	case err == nil:
+		u.ID = existingID
+		if u.CreatedAt, err = parseTime(existingCreatedAt); err != nil {
+			u.CreatedAt = now
 		}
-		return u, fmt.Errorf("inserir usuário: %w", err)
+		u.UpdatedAt = now
+
+		if _, err = tx.Exec(
+			`UPDATE users SET name = ?, email = ?, status = ?, password_hash = ?, deleted_at = NULL, updated_at = ? WHERE id = ?`,
+			u.Name, u.Email, u.Status, u.PasswordHash, nowStr, u.ID,
+		); err != nil {
+			return u, fmt.Errorf("reativar usuário: %w", err)
+		}
+		if _, err = tx.Exec(`DELETE FROM user_roles WHERE user_id = ?`, u.ID); err != nil {
+			return u, fmt.Errorf("limpar papel anterior: %w", err)
+		}
+
+	case errors.Is(err, sql.ErrNoRows):
+		u.CreatedAt, u.UpdatedAt = now, now
+		_, err = tx.Exec(
+			`INSERT INTO users (id, name, email, status, password_hash, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+			u.ID, u.Name, u.Email, u.Status, u.PasswordHash, nowStr, nowStr,
+		)
+		if err != nil {
+			if strings.Contains(strings.ToLower(err.Error()), "unique") {
+				return u, ErrEmailExists
+			}
+			return u, fmt.Errorf("inserir usuário: %w", err)
+		}
+
+	default:
+		return u, fmt.Errorf("verificar e-mail existente: %w", err)
 	}
 
 	var roleID string
 	if err := tx.QueryRow(`SELECT id FROM roles WHERE name = ?`, u.Role).Scan(&roleID); err != nil {
 		return u, fmt.Errorf("buscar papel %s: %w", u.Role, err)
 	}
-	if _, err := tx.Exec(`INSERT INTO user_roles (user_id, role_id, created_at) VALUES (?, ?, ?)`, u.ID, roleID, now.Format(time.RFC3339)); err != nil {
+	if _, err := tx.Exec(`INSERT INTO user_roles (user_id, role_id, created_at) VALUES (?, ?, ?)`, u.ID, roleID, nowStr); err != nil {
 		return u, fmt.Errorf("vincular papel: %w", err)
 	}
 
